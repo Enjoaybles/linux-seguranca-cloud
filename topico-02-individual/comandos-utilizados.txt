@@ -1,0 +1,3 @@
+whoami: Exibe o nome do utilizador atual.
+id: Mostra o ID do utilizador e grupos associados.
+groups: Lista os grupos aos quais o utilizador pertence.

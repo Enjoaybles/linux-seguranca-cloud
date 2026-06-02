@@ -1,0 +1,8 @@
+COMANDOS UTILIZADOS 
+
+mkdir -utilizado para criar diretorios, com a extencao -p consegui criar um diretorio dentro de um outro diretorio.
+touch - utilizado somente para criacao de um ficheiro.
+nano - utilizado para criacao e edicao do mesmo ficheiro de texto.
+echo - utilizado para exibir texto ou dados na tela.
+ls - utilizado para listar os arquivos e diretorios no sistema de arquivos.
+cd - utilizado para navegar entre as pastas e os diretorios no sistema operacional.
