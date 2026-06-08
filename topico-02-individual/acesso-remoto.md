@@ -66,3 +66,39 @@ Last login: Tue Jun  2 10:49:20 2026 from 192.168.1.97
 ## Limitacoes encontradas
 Aprender novos comandos e saber a extencao da sua utilizacao.
 
+# Acesso remoto e chaves SSH
+
+## Diferenca entre autenticacao por palavra-passe e autenticaca0 por chave
+A autenticacao por palavra-passe usa um segredo que o utilizador escreve para provar quem e. 
+E simples de usar, mas pode ser menos segura, sobretudo se a palavra-passe for fraca ou se houver tentativas de adivinhacao.
+
+A autenticacao por chave usa um par de chave, normalmente em SSH: a chave privada fica no teu computador e publica fica no servidor.
+Em vez de enviares uma palavra-passe, o sistema verifica se tens a chave privada correta.
+
+Em geral, a autenticacao por chave e mais segura e costuma ser mas pratica para acessos remotos frequentes, mas exige configuracao inicial.
+
+## Chave publica
+Uma chave publica SSH e a parte publica de um par de chaves usados para autenticacao segura em ligacoes SSH
+Ela serve para identificar a tua maquina/utente num servidor remoto.
+O servidor usa a chave publica para verificar que quem esta a ligar tem a chave privada correspondente.
+
+Exemplo : ssh-ed25519 AAAAC3NzaC1lDINTE5AAAAIB... teu_email@example.com
+
+Serve para entrar num servidor sem password, automatizar acessos seguros, aumentar a seguranca em comparacao com passwords
+
+## Chave privada
+Uma chave privada no Linux e o ficheiro secreto de um de chaves criptograficas, usado para provar a tua identidade.
+No SSH, ela corresponde a tua chave publica no servidor.
+Nunca deve ser partilhada, copiada para outras pessoas ou enviada por email.
+O servidor desafia o cliente, o servidor confirma com a chave publica que es mesmo tu.
+
+## Cuidados de seguranca
+- Atualizar o sistema regularmente;
+- Usar utilizadores normais, evitando root;
+- Ativar firewall;
+- Instalar so o necessario;
+- Fazer backups;
+- Monitorizar logs e recursos;
+- Manter boas permissoes nos ficheiros;
+
+## Evidencia segura
