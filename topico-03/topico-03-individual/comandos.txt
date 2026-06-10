@@ -1,0 +1,29 @@
+# 1. Atualizar o sistema operacional
+sudo apt update && sudo apt upgrade -y
+
+# 2. Instalar o servidor web Nginx
+sudo apt install nginx -y
+
+# 3. Validar se o serviço está ativo e em execução
+sudo systemctl status nginx
+
+# 4. Criar a diretoria para o novo site
+sudo mkdir -p /var/www/ecotech
+
+# 5. Alterar a permissão da pasta para o utilizador atual
+sudo chown -R $USER:$USER /var/www/ecotech
+
+# 6. (Após mover os ficheiros HTML/CSS para a pasta) Definir permissões de leitura pública
+sudo chmod -R 755 /var/www/ecotech
+
+# 7. Criar o ficheiro de configuração do bloco de servidor (Virtual Host)
+sudo nano /etc/nginx/sites-available/ecotech
+
+# 8. Criar o link simbólico para ativar o site
+sudo ln -s /etc/nginx/sites-available/ecotech /etc/nginx/sites-enabled/
+
+# 9. Testar a sintaxe da configuração do Nginx
+sudo nginx -t
+
+# 10. Reiniciar o Nginx para aplicar as alterações
+sudo systemctl restart nginx
