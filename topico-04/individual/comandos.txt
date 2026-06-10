@@ -1,0 +1,28 @@
+# --- NÍVEL 1: AUDITORIA E DIAGNÓSTICO ---
+# Verificar processos ativos e portas associadas
+sudo ss -tulpn
+# Alternativa para listagem de serviços em escuta
+sudo netstat -s
+
+# --- NÍVEL 2: CONFIGURAÇÃO DE FIREWALL (UFW) ---
+# Verificar o estado atual da firewall
+sudo ufw status
+# Definir regras restritivas por omissão (Bloquear entrada, permitir saída)
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+# Permitir portos essenciais para o cenário web e administração
+sudo ufw allow 22/tcp
+sudo ufw allow 80/tcp
+# Ativar a firewall perimetral
+sudo ufw enable
+# Validar o novo estado e regras ativas
+sudo ufw status verbose
+
+# --- EXTRA: ESTRUTURA DE REPOSITÓRIO LOCAL ---
+mkdir -p topico-04/individual/evidencias
+touch topico-04/individual/comandos.txt
+touch topico-04/individual/superficie-ataque.md
+touch topico-04/individual/firewall.md
+touch topico-04/individual/hardening.md
+touch topico-04/individual/validacao.md
+touch topico-04/individual/README.md

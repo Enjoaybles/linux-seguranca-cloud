@@ -1,0 +1,89 @@
+SISTEMA DE ENSINO / FORMAÇÃO PROFISSIONAL
+UNIDADE DE COMPETÊNCIA: SEGURANÇA DE REDES E SISTEMAS
+TÓPICO 04: SEGURANÇA E HARDENING INICIAL
+
+---------------------------------------------------------------------------
+RELATÓRIO TÉCNICO: ATIVIDADE INDIVIDUAL - HARDENING E FIREWALL
+---------------------------------------------------------------------------
+
+AUTOR: [Ruddy Timas]
+DATA: Junho de 2026
+VERSÃO: 1.0
+
+===========================================================================
+1. INTRODUÇÃO E FINALIDADE DA ATIVIDADE
+===========================================================================
+A presente atividade individual tem como finalidade aplicar e documentar as medidas iniciais de segurança ao serviço web estático publicado no âmbito do Tópico 3. O foco central está estruturado de forma progressiva em três níveis de maturidade:
+
+- Nível 1 (Essencial): Identificação taxonómica dos serviços, mapeamento das portas ativas e diagnóstico preliminar da superfície de ataque e dos seus riscos associados.
+- Nível 2 (Intermédio): Implementação prática de políticas de filtragem de pacotes através da ativação e configuração da Uncomplicated Firewall (UFW), seguida da validação de continuidade de serviço.
+- Nível 3 (Avançado): Desenho e execução de um plano estratégico de hardening focado no ecossistema do servidor web Nginx e mitigação de vetores de exploração específicos.
+
+===========================================================================
+2. NÍVEL 1 – ESSENCIAL: CARACTERIZAÇÃO DA SUPERFÍCIE DE ATAQUE
+===========================================================================
+No seguimento do Tópico 3, o serviço em análise corresponde ao Cenário A: uma página HTML estática com folhas de estilo CSS, alojada num servidor Linux (distribuição baseada em Ubuntu/Debian).
+
+Após auditoria interna ao sistema através dos comandos de diagnóstico `sudo ss -tulpn` e `sudo netstat`, foram identificados os seguintes comportamentos na rede:
+
+2.1. Portas e Serviços Ativos Detetados
+- Porta 22/TCP: Associada ao processo `sshd` (OpenSSH Server), responsável pela receção de ligações de administração e transferência de ficheiros.
+- Porta 80/TCP: Associada ao processo `nginx` (Master and Worker Processes), responsável pelo atendimento público das requisições HTTP da página web.
+
+2.2. Análise de Necessidade das Portas
+- Porta 22 (SSH): Identificada como NECESSÁRIA. Trata-se do único ponto de contacto seguro para que o administrador realize manutenção, correções no sistema e atualizações de conteúdos.
+- Porta 80 (HTTP): Identificada como NECESSÁRIA. Garante que os utilizadores externos cheguem ao servidor. Deverá, numa fase posterior, servir apenas de ponte de redirecionamento para o tráfego seguro.
+- Porta 443 (HTTPS) e Porta 3306 (MySQL): Identificadas como NÃO NECESSÁRIAS/INEXISTENTES nesta fase. A ausência de uma base de dados reduz nativamente a superfície de ataque ao eliminar riscos associados a SQL Injection ou fugas de dados credenciais.
+
+2.3. Identificação de Riscos Iniciais Graves
+1. Ataques Automatizados de Força Bruta (Porta 22): A exposição global do SSH atrai varrimentos contínuos de bots na Internet que tentam adivinhar palavras-passe de administração.
+2. Information Disclosure (Exposição de Metadados): A configuração padrão do Nginx envia a versão exata do software nos cabeçalhos HTTP, permitindo a atacantes mapear falhas conhecidas (CVEs).
+3. Escuta Ativa de Tráfego (HTTP): Sendo um protocolo sem cifragem, qualquer dado transmitido na porta 80 pode ser intercetado (Sniffing) em redes públicas ou partilhadas.
+
+===========================================================================
+3. NÍVEL 2 – INTERMÉDIO: APLICAÇÃO DE FIREWALL E VALIDAÇÃO
+===========================================================================
+Para conter os riscos de exposição da rede, foi configurada a ferramenta Uncomplicated Firewall (UFW).
+
+3.1. Estado Inicial
+A validação inicial (`sudo ufw status`) reportava o estado como inativo (`Status: inactive`), significando que a segurança dependia exclusivamente do isolamento dos serviços no sistema operativo.
+
+3.2. Estratégia e Regras de Redirecionamento
+Para evitar o isolamento acidental do servidor remoto, a firewall foi configurada seguindo estritamente a sequência descrita abaixo:
+1. Aplicação da política restritiva por omissão: `sudo ufw default deny incoming` e `sudo ufw default allow outgoing` (Bloqueia tudo à entrada, liberta à saída).
+2. Abertura do canal administrativo: `sudo ufw allow 22/tcp`.
+3. Abertura do tráfego web público: `sudo ufw allow 80/tcp`.
+4. Ativação do perímetro: `sudo ufw enable`.
+
+A matriz final resultante do comando `sudo ufw status verbose` garante o seguinte isolamento:
+- Porta 22/TCP -> ALLOW (Origem: Anywhere)
+- Porta 80/TCP -> ALLOW (Origem: Anywhere)
+- Qualquer outra porta -> DENY/DROP por omissão.
+
+3.3. Validação de Acessibilidade
+Após a ativação das barreiras de rede, realizaram-se testes de integridade:
+- Validação Local: O comando `curl -I http://localhost` devolveu o estado `HTTP/1.1 200 OK`, provando que o processo interno do Nginx não foi afetado.
+- Validação Externa: Através de um navegador web externo, confirmou-se que o site HTML continua online e a renderizar os ficheiros estáticos com sucesso.
+
+===========================================================================
+4. NÍVEL 3 – AVANÇADO: PLANO DE HARDENING INICIAL
+===========================================================================
+O hardening focado no Nginx visa mitigar os riscos específicos identificados no diagnóstico do Nível 1.
+
+4.1. Medidas de Hardening Aplicadas Imediatamente
+1. Ocultação de Assinatura do Nginx: Inserida a diretiva `server_tokens off;` no bloco principal do ficheiro `/etc/nginx/nginx.conf`. Esta ação remove a indicação da versão do software das respostas do servidor.
+2. Desativação do Indexing de Pastas: Adicionada a diretiva `autoindex off;` no ficheiro de configuração do site, impedindo que utilizadores externos visualizem a árvore de ficheiros caso o documento index.html seja removido.
+3. Permissões de Privilégio Mínimo no Linux: O utilizador do Nginx (`www-data`) foi privado de permissões de escrita no diretório web. A propriedade de `/var/www/html/` foi alterada para o utilizador administrador `root`, fixando permissões estritas de leitura: pastas em `755` e ficheiros em `644`.
+
+4.2. Medidas Agendadas para Fases Seguintes (Roteiro Futuro)
+Devido à necessidade de pacotes adicionais ou arquiteturas pendentes, as seguintes medidas ficam planeadas para os próximos tópicos:
+- Implementação de TLS (HTTPS): Instalação e renovação automatizada de certificados digitais gratuitos através da ferramenta Certbot / Let's Encrypt na porta 443.
+- Restrição de Métodos HTTP: Bloqueio estrutural de pedidos do tipo `POST`, `PUT` ou `DELETE` no Nginx, uma vez que o site é puramente estático e apenas requer os métodos `GET` e `HEAD`.
+- Segurança Avançada do SSH: Migração do porto padrão 22 para um porto alto aleatório e bloqueio do login direto à conta `root`.
+
+===========================================================================
+5. CONCLUSÃO
+===========================================================================
+A execução desta atividade individual permitiu consolidar a importância do hardening inicial na fase de publicação de serviços. A aplicação conjugada de regras estritas de firewall ao nível da rede (UFW) com a alteração de parâmetros padrão no servidor web (Nginx) reduziu de forma substancial a superfície de exposição do sistema operativo. 
+
+O servidor encontra-se agora protegido contra ataques genéricos e automatizados, mantendo a integridade e a performance da página HTML publicada no Tópico 3. Todas as evidências técnicas e ficheiros de configuração foram documentados e carregados para o repositório GitHub.
