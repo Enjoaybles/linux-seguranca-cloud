@@ -12,13 +12,13 @@ A organização dos ficheiros segue estritamente os requisitos definidos pelo gu
 ```text
 topico-05/
 └── trabalho-grupo/
-    ├── grupo-7-monitorizacao-continuidade-topico-05.pdf  <-- Relatório Oficial em PDF
-    ├── README.md                                         <-- Este ficheiro de apresentação
-    └── evidencias/                                       <-- Capturas de ecrã e logs do sistema
+    ├── grupo-7-monitorizacao-continuidade-topico-05.pdf
+    ├── README.md
+    └── evidencias/
 ```
 
 ## 👥 Identificação do Grupo
-* **Grupo**: Grupo X *(Substituir pelo número do vosso grupo)*
+* **Grupo**: Grupo Xablau
 * **Elementos e Papéis**:
   * **Elemento 1 (Ruddy Timas)**: Administrador de Sistemas (SysAdmin) & Plano de Backup
   * **Elemento 2 (Tamiris Evora)**: Engenheiro de Monitorização (DevOps) & Gestão de Logs
