@@ -8,9 +8,9 @@
 ## 📂 Estrutura do Tópico 04
 A organização deste diretório segue rigorosamente a estrutura metodológica solicitada:
 
-* 📄 grupo-ruddy-tamiris-wilson-seguranca-hardening-topico-04.pdf -> Relatório técnico final detalhado (2 a 4 páginas).
-* 📄 README.md -> Este documento de apresentação e enquadramento.
-* 📁 evidencias/ -> Pasta destinada aos prints de ecrã e ficheiros de configuração (ex: nginx.conf, regras do ufw).
+* 📄 grupo-ruddy-tamiris-wilson-seguranca-hardening-topico-04.pdf
+* 📄 README.md
+* 📁 evidencias/
 
 ## ⚙️ Cenário Selecionado
 * *Cenário A*: Página HTML com Nginx (Ambiente Linux - Ubuntu Server).
