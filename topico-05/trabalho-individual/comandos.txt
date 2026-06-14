@@ -1,0 +1,17 @@
+# NÍVEL 1: Monitorização de Recursos e Logs (Ubuntu 26.04 / Nginx)
+uptime
+free -h
+df -h
+sudo systemctl status nginx
+sudo journalctl -u nginx -n 20
+sudo tail -n 20 /var/log/nginx/error.log
+
+# NÍVEL 2: Backup e Recuperação Simples
+sudo tar -czvf /home/ubuntu/backup_nginx_$(date +%F).tar.gz /var/www/html
+mkdir -p /home/ubuntu/teste_recuperacao
+tar -xzvf /home/ubuntu/backup_nginx_*.tar.gz -C /home/ubuntu/teste_recuperacao
+ls -la /home/ubuntu/teste_recuperacao/var/www/html
+
+# NÍVEL 3: Validação de Continuidade
+sudo nginx -t
+curl -I http://localhost
